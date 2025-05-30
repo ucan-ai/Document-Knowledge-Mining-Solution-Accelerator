@@ -13,16 +13,11 @@ on:
   workflow_dispatch:
 
 env:
-    # url: ${{ vars.DKM_URL }}
-    url: "https://kmgs6012.eastus2.cloudapp.azure.com/"
+    url: ${{ vars.DKM_URL }}
     accelerator_name: "DKM"
 
 jobs:
   test:
-    # permissions:
-    #   id-token: write
-    #   contents: read
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -45,8 +40,7 @@ jobs:
           azcliversion: 'latest'
           inlineScript: |
             az aks install-cli
-            # if [ "$(az aks show --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }} --query "powerState.code" -o tsv)" = "Running" ]; then echo "AKS is running"; else az aks start --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }}; fi
-            if [ "$(az aks show --resource-group rg-kmgseizkz --name aks-kmgseizkz --query "powerState.code" -o tsv)" = "Running" ]; then echo "AKS is running"; else az aks start --resource-group rg-kmgseizkz --name aks-kmgseizkz; fi
+            if [ "$(az aks show --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }} --query "powerState.code" -o tsv)" = "Running" ]; then echo "AKS is running"; else az aks start --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }}; fi
 
       - name: Install dependencies
         run: |
@@ -122,7 +116,7 @@ jobs:
           fi
 
           # Send the notification
-          curl -X POST "${{ secrets.EMAILNOTIFICATION_LOGICAPP_URL }}" \
+          curl -X POST "${{ secrets.EMAILNOTIFICATION_LOGICAPP_URL_TA }}" \
             -H "Content-Type: application/json" \
             -d "$EMAIL_BODY" || echo "Failed to send notification"
 
@@ -133,6 +127,5 @@ jobs:
           azcliversion: 'latest'
           inlineScript: |
             az aks install-cli
-            # if [ "$(az aks show --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }} --query "powerState.code" -o tsv)" = "Running" ]; then az aks stop --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }}; else echo "AKS is already stopped"; fi
-            if [ "$(az aks show --resource-group rg-kmgseizkz --name aks-kmgseizkz --query "powerState.code" -o tsv)" = "Running" ]; then az aks stop --resource-group rg-kmgseizkz --name aks-kmgseizkz; else echo "AKS is already stopped"; fi
+            if [ "$(az aks show --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }} --query "powerState.code" -o tsv)" = "Running" ]; then az aks stop --resource-group ${{ vars.DKM_RG }} --name ${{ vars.DKM_AKS_NAME }}; else echo "AKS is already stopped"; fi
             az logout
