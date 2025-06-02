@@ -5,9 +5,8 @@ on:
     branches:
       - main
       - dev
-      - migrate-test-automation
     paths:
-      - 'tests/e2e-tests/**'
+      - 'tests/e2e-test/**'
   schedule:
       - cron: '0 13 * * *'  # Runs at 1 PM UTC
   workflow_dispatch:
@@ -45,7 +44,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r tests/e2e-tests/requirements.txt
+          pip install -r tests/e2e-test/requirements.txt
 
       - name: Ensure browsers are installed
         run: python -m playwright install --with-deps chromium
@@ -54,7 +53,7 @@ jobs:
         id: test1
         run: |
           xvfb-run pytest --headed --html=report/report.html --self-contained-html
-        working-directory: tests/e2e-tests
+        working-directory: tests/e2e-test
         continue-on-error: true
 
       - name: Sleep for 30 seconds
@@ -67,7 +66,7 @@ jobs:
         if: ${{ steps.test1.outcome == 'failure' }}
         run: |
           xvfb-run pytest --headed --html=report/report.html --self-contained-html
-        working-directory: tests/e2e-tests
+        working-directory: tests/e2e-test
         continue-on-error: true
 
       - name: Sleep for 60 seconds
@@ -80,7 +79,7 @@ jobs:
         if: ${{ steps.test2.outcome == 'failure' }}
         run: |
           xvfb-run pytest --headed --html=report/report.html --self-contained-html
-        working-directory: tests/e2e-tests
+        working-directory: tests/e2e-test
 
       - name: Upload test report
         id: upload_report
@@ -88,7 +87,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: test-report
-          path: tests/e2e-tests/report/*
+          path: tests/e2e-test/report/*
 
       - name: Send Notification
         if: always()
