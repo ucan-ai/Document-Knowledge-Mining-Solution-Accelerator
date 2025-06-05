@@ -9,6 +9,8 @@ import os
 from py.xml import html # type: ignore
 import io
 import logging
+from bs4 import BeautifulSoup
+import atexit
 
 
 @pytest.fixture(scope="session")
@@ -84,3 +86,28 @@ def pytest_collection_modifyitems(items):
             prompt = item.callspec.params.get("prompt")
             if prompt:
                 item._nodeid = prompt  # This controls how the test name appears in the report
+
+def rename_duration_column():
+    report_path = os.path.abspath("report.html")  # or your report filename
+    if not os.path.exists(report_path):
+        print("Report file not found, skipping column rename.")
+        return
+
+    with open(report_path, 'r', encoding='utf-8') as f:
+        soup = BeautifulSoup(f, 'html.parser')
+
+    # Find and rename the header
+    headers = soup.select('table#results-table thead th')
+    for th in headers:
+        if th.text.strip() == 'Duration':
+            th.string = 'Execution Time'
+            #print("Renamed 'Duration' to 'Execution Time'")
+            break
+    else:
+        print("'Duration' column not found in report.")
+
+    with open(report_path, 'w', encoding='utf-8') as f:
+        f.write(str(soup))
+
+# Register this function to run after everything is done
+atexit.register(rename_duration_column)
