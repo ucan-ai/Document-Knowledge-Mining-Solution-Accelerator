@@ -73,6 +73,7 @@ export function ChatRoom({ searchResultDocuments, selectedDocuments, chatWithDoc
     });
     const [referencesForFeedbackForm, setReferencesForFeedbackForm] = useState<Reference[]>([]);
     const [textAreaValue, setTextAreaValue] = useState("");
+    const [textareaKey, setTextareaKey] = useState(0);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const [allChunkTexts, setAllChunkTexts] = useState<string[]>([]);
 
@@ -568,12 +569,15 @@ export function ChatRoom({ searchResultDocuments, selectedDocuments, chatWithDoc
                         setSelectedDocument([]);
                         setIsLoading(false);
                         setChatSessionId(null);
+                        setTextAreaValue("");
+                        setTextareaKey(prev => prev + 1);
                     }}
                 >
                     {t('components.chat.new-topic')}
                 </Button>
 
                 <Textarea
+                    key={textareaKey}
                     ref={inputRef}
                     value={textAreaValue}
                     className="!ml-4 max-h-48 w-full !max-w-none"
