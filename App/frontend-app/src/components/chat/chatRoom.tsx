@@ -583,6 +583,7 @@ export function ChatRoom({ searchResultDocuments, selectedDocuments, chatWithDoc
                     placeholder={t('components.chat.input-placeholder')}
                     disabled={isLoading}
                     onSubmit={handleSend}
+                    disableSend = {textAreaValue.trim().length === 0 || isLoading}
                     contentAfter={undefined}
                 />
             </div>
