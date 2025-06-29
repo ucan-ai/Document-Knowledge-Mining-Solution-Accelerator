@@ -9,8 +9,8 @@
     },
     "components": {
         "header-bar": {
-            "title": "Contoso",
-            "sub-title": "Document Knowledge Mining",
+            "title": "UCAN AI - SuperDoc",
+            "sub-title": "Document Search and Knowledge Mining",
             "home": "Home",
             "contribute": "Contribute",
             "blog": "Blog",
